@@ -1,4 +1,4 @@
-package com.cozyfriend
+package com.xenofables.cozyfriend
 
 import android.app.Application
 import com.facebook.react.PackageList
