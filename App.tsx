@@ -1,45 +1,34 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect, useRef, useState } from 'react'
+import { SafeAreaView, Text } from 'react-native'
+import { createGeminiLiveSocket } from './src/services/geminiLive'
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+export default function App() {
+  const wsRef = useRef<WebSocket | null>(null)
+  const [status, setStatus] = useState('idle')
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  useEffect(() => {
+    console.log('App mounted') // lowercase console
+
+    setStatus('connecting')
+
+    const ws = createGeminiLiveSocket({
+      personaName: 'CozyFriend',
+      voiceName: 'Puck',
+      systemText: 'You are [Persona Name], a cozy AI friend...',
+    })
+
+    wsRef.current = ws
+
+    ws.addEventListener('open', () => setStatus('open'))
+    ws.addEventListener('error', () => setStatus('error'))
+    ws.addEventListener('close', () => setStatus('closed'))
+
+    return () => ws.close()
+  }, [])
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
+    <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Gemini Live status: {status}</Text>
+    </SafeAreaView>
+  )
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;
