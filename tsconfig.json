@@ -3,6 +3,8 @@
   "compilerOptions": {
     "types": ["jest"],
     "typeRoots": ["./types", "./node_modules/@types"],
+    "jsx": "react-native",
+    "lib": ["esnext"]
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]
